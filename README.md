@@ -7,7 +7,7 @@ Docker-based media stack running inside a single unprivileged LXC container on P
 | Item | Value |
 |---|---|
 | Host | Proxmox VE |
-| Container ID | `100` |
+| Container ID | `200` |
 | Hostname | `docker-lxc` |
 | Container type | Unprivileged LXC |
 | Container runtime | Docker CE + Compose plugin |
@@ -172,11 +172,11 @@ Real values to fill in: `<provider>` and `VPN_TYPE` for gluetun, plus any enviro
 └── movies/        ← Radarr-managed, Jellyfin library
 ```
 
-All containers that touch media mount the same host path so Sonarr/Radarr renames are visible to Jellyfin without a copy step.
+All containers that touch media mount this same host path so Sonarr/Radarr renames are visible to Jellyfin without a copy step.
 
 ## VPN Kill Switch — Verify It Actually Works
 
-Don't assume Gluetun's kill switch works just because it's configured. Test it:
+Don't assume gluetun's kill switch works just because it's configured. Test it:
 ```bash
 docker compose stop gluetun
 docker compose exec qbittorrent curl -s ifconfig.me
@@ -228,4 +228,5 @@ docker compose up -d
 - qBittorrent has no network of its own (`network_mode: service:gluetun`) — if gluetun isn't healthy first, qBittorrent silently has no connectivity rather than erroring clearly.
 
 ---
+*Replace all `<placeholder>` values and confirm CTID/resource numbers match your actual `/etc/pve/lxc/200.conf` before committing.*
 *Replace all `<placeholder>` values and confirm CTID/resource numbers match your actual `/etc/pve/lxc/200.conf` before committing.*
