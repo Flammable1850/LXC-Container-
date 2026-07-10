@@ -7,7 +7,7 @@ Docker-based media stack running inside a single unprivileged LXC container on P
 | Item | Value |
 |---|---|
 | Host | Proxmox VE |
-| Container ID | `200` |
+| Container ID | `100` |
 | Hostname | `docker-lxc` |
 | Container type | Unprivileged LXC |
 | Container runtime | Docker CE + Compose plugin |
@@ -17,7 +17,7 @@ Docker-based media stack running inside a single unprivileged LXC container on P
 
 ```
 Proxmox Host
-└── LXC 200 "docker-lxc" (unprivileged, nesting=1, keyctl=1)
+└── LXC 100 "docker-lxc" (unprivileged, nesting=1, keyctl=1)
     └── Docker Engine
         ├── portainer      (container management UI)
         ├── jellyfin       (media server, HW transcoding via /dev/dri)
@@ -30,7 +30,7 @@ Proxmox Host
 
 Reverse proxy note: routes have been run through both Traefik and Nginx Proxy Manager at different points — confirm which one is currently deployed before editing this section.
 
-## LXC Container Config (`/etc/pve/lxc/200.conf`)
+## LXC Container Config (`/etc/pve/lxc/100.conf`)
 
 ```ini
 arch: amd64
@@ -59,13 +59,13 @@ Match the major/minor numbers shown (typically `226,0` for `card0` and `226,128`
 
 **Applying config changes:**
 ```bash
-pct stop 200
-pct start 200
+pct stop 100
+pct start 100
 ```
 
 Then verify inside the container:
 ```bash
-pct exec 200 -- ls -la /dev/dri
+pct exec 100 -- ls -la /dev/dri
 ```
 
 If the container is unprivileged and `/dev/dri` shows up but Jellyfin still can't transcode, it's a GID mapping issue — the render group inside the container needs to map to a UID/GID range Proxmox has allocated in `/etc/subgid`.
@@ -199,7 +199,7 @@ Restart Docker after editing: `systemctl restart docker`.
 
 ## Backups
 
-- **Container-level:** `vzdump` snapshot of LXC 200 from the Proxmox host, scheduled.
+- **Container-level:** `vzdump` snapshot of LXC 100 from the Proxmox host, scheduled.
 - **App-level:** back up each service's `./<service>/config` directory separately — faster to restore a single app's settings than a full container snapshot.
 - **Compose + `.env`:** version-controlled (secrets excluded) so the stack can be redeployed from a clean container if needed.
 
@@ -217,7 +217,7 @@ docker compose up -d
 - [ ] Kill switch still verified after gluetun/provider changes
 - [ ] Docker logs not filling container disk
 - [ ] `vzdump` backup job completed successfully
-- [ ] `pct exec 200 -- docker stats` — no single container starving the rest
+- [ ] `pct exec 100 -- docker stats` — no single container starving the rest
 - [ ] Reverse proxy routes still resolve after any container IP change
 
 ## Known Gotchas
@@ -228,5 +228,4 @@ docker compose up -d
 - qBittorrent has no network of its own (`network_mode: service:gluetun`) — if gluetun isn't healthy first, qBittorrent silently has no connectivity rather than erroring clearly.
 
 ---
-*Replace all `<placeholder>` values and confirm CTID/resource numbers match your actual `/etc/pve/lxc/200.conf` before committing.*
-*Replace all `<placeholder>` values and confirm CTID/resource numbers match your actual `/etc/pve/lxc/200.conf` before committing.*
+*Replace all `<placeholder>` values and confirm CTID/resource numbers match your actual `/etc/pve/lxc/100.conf` before committing.*
