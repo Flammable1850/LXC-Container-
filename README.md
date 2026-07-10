@@ -7,7 +7,7 @@ Docker-based media stack running inside a single unprivileged LXC container on P
 | Item | Value |
 |---|---|
 | Host | Proxmox VE |
-| Container ID | `200` |
+| Container ID | `100` |
 | Hostname | `docker-lxc` |
 | Container type | Unprivileged LXC |
 | Container runtime | Docker CE + Compose plugin |
